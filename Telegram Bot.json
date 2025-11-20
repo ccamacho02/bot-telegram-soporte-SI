@@ -1,0 +1,861 @@
+{
+  "name": "Telegram Bot",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "telegram-bot",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -336,
+        -16
+      ],
+      "id": "6d2b9bae-dcc1-4ffc-8612-c7e6bba6a478",
+      "name": "Webhook",
+      "webhookId": "4067eb4c-d43d-4b59-b36e-3511c17cd2ac"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://models.github.ai/inference/chat/completions",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "{\n  \"Authorization\": \"Bearer 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\",\n  \"Content-Type\": \"application/json\",\n  \"Accept\": \"application/json\"\n}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"openai/gpt-4o-mini\",\n  \"messages\": [\n    { \"role\": \"system\", \"content\": \"Eres un asistente de soporte técnico 24/7.\" },\n    { \"role\": \"user\", \"content\": \"{{ $('Switch').item.json.mensaje }}\"}\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1216,
+        288
+      ],
+      "id": "7b772920-84dc-44bd-b4b7-0b0f224be119",
+      "name": "HTTP Request",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "VdY5guaw7wDGrODd",
+          "name": "Bearer Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const kb = {\n  \"instalacion_software\": {\n    // PYTHON WINDOWS\n    \"install_python_on_windows\": [\n      \"1. Download the official Python installer for Windows from https://www.python.org/downloads/windows/ and choose the appropriate version (usually the latest 64-bit release).\",\n      \"2. Run the installer and on the first screen check the option 'Add Python to PATH' so you can use Python from the terminal.\",\n      \"3. If you need to change the install directory or components, choose 'Customize installation' and follow the wizard (keep pip and recommended tools enabled).\",\n      \"4. Finish the installation and close the installer.\",\n      \"5. Open Command Prompt or PowerShell and verify the installation with: python --version or py --version.\",\n      \"6. Optional: install pipenv or virtualenv to manage virtual environments for your projects.\"\n    ],\n    \"python_windows\": [\n      \"1. Descargar el instalador oficial de Python para Windows desde https://www.python.org/downloads/windows/ asegurándote de elegir la versión adecuada (normalmente la última estable de 64 bits).\",\n      \"2. Ejecutar el instalador y, en la primera pantalla, marcar la casilla 'Add Python to PATH' para poder usar Python desde la terminal.\",\n      \"3. Si necesitas cambiar la ruta de instalación o componentes, elegir 'Customize installation' y seguir el asistente (mantener por defecto pip y herramientas recomendadas).\",\n      \"4. Completar la instalación y cerrar el instalador.\",\n      \"5. Abrir 'Símbolo del sistema' o PowerShell y verificar la instalación con: python --version o py --version.\",\n      \"6. Opcional: instalar pipenv o virtualenv para gestionar entornos virtuales de proyectos.\"\n    ],\n\n    // PYTHON LINUX\n    \"install_python_on_linux\": [\n      \"1. Open a terminal and update the package lists: sudo apt update.\",\n      \"2. Install Python 3 and pip: sudo apt install python3 python3-pip.\",\n      \"3. Verify the installation with: python3 --version and pip3 --version.\",\n      \"4. Optional: create a virtual environment with: python3 -m venv venv and activate it using: source venv/bin/activate.\"\n    ],\n    \"python_linux\": [\n      \"1. Abrir una terminal y actualizar los repositorios: sudo apt update.\",\n      \"2. Instalar Python 3 y pip: sudo apt install python3 python3-pip.\",\n      \"3. Verificar la instalación con: python3 --version y pip3 --version.\",\n      \"4. Opcional: crear un entorno virtual con: python3 -m venv venv y activarlo con: source venv/bin/activate.\"\n    ],\n\n    // PYTHON MACOS\n    \"install_python_on_macos\": [\n      \"1. Install Homebrew if you don’t have it yet by running in the terminal: /bin/bash -c \\\"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\\\".\",\n      \"2. Install Python with Homebrew: brew install python.\",\n      \"3. Verify the installation with: python3 --version and pip3 --version.\",\n      \"4. Optional: create a virtual environment with: python3 -m venv venv and activate it using: source venv/bin/activate.\"\n    ],\n    \"python_macos\": [\n      \"1. Instalar Homebrew si aún no lo tienes, ejecutando en la terminal: /bin/bash -c \\\"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\\\".\",\n      \"2. Instalar Python con Homebrew: brew install python.\",\n      \"3. Verificar la instalación con: python3 --version y pip3 --version.\",\n      \"4. Opcional: crear un entorno virtual con: python3 -m venv venv y activarlo con: source venv/bin/activate.\"\n    ],\n\n    // NODE WINDOWS\n    \"install_node_on_windows\": [\n      \"1. Download the Node.js installer (LTS version recommended) from https://nodejs.org.\",\n      \"2. Run the installer and keep the default options, including npm.\",\n      \"3. Finish the wizard and close the installer.\",\n      \"4. Open Command Prompt or PowerShell and verify the installation with: node -v and npm -v.\",\n      \"5. Optional: use npx (bundled with npm in modern versions) to run tools without installing them globally.\"\n    ],\n    \"node_windows\": [\n      \"1. Descargar el instalador de Node.js (versión LTS recomendada) desde https://nodejs.org.\",\n      \"2. Ejecutar el instalador y dejar las opciones por defecto, incluyendo la instalación de npm.\",\n      \"3. Finalizar el asistente y cerrar el instalador.\",\n      \"4. Abrir 'Símbolo del sistema' o PowerShell y verificar la instalación con: node -v y npm -v.\",\n      \"5. Opcional: usar npx (incluido con npm en versiones modernas) para ejecutar herramientas sin instalarlas globalmente.\"\n    ],\n\n    // NODE LINUX\n    \"install_node_on_linux\": [\n      \"1. Open a terminal and install curl if it’s not installed: sudo apt install curl.\",\n      \"2. Install NVM (Node Version Manager): curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash.\",\n      \"3. Reload your shell: source ~/.bashrc or source ~/.zshrc, depending on your shell.\",\n      \"4. Install the LTS version of Node with NVM: nvm install --lts.\",\n      \"5. Set the default version if needed: nvm use --lts.\",\n      \"6. Verify the installation with: node -v and npm -v.\"\n    ],\n    \"node_linux\": [\n      \"1. Abrir una terminal e instalar curl si no está instalado: sudo apt install curl.\",\n      \"2. Instalar NVM (Node Version Manager) para gestionar versiones de Node: curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash.\",\n      \"3. Cerrar y volver a abrir la terminal o ejecutar: source ~/.bashrc o source ~/.zshrc según el shell.\",\n      \"4. Instalar la versión LTS de Node con NVM: nvm install --lts.\",\n      \"5. Establecer la versión por defecto si se requiere: nvm use --lts.\",\n      \"6. Verificar la instalación con: node -v y npm -v.\"\n    ],\n\n    // NODE MACOS\n    \"install_node_on_macos\": [\n      \"1. Install Homebrew if it is not installed.\",\n      \"2. Install Node.js with Homebrew: brew install node.\",\n      \"3. Verify the installation with: node -v and npm -v.\",\n      \"4. Optional: use nvm to manage multiple Node versions if needed.\"\n    ],\n    \"node_macos\": [\n      \"1. Instalar Homebrew si no está instalado.\",\n      \"2. Instalar Node.js con Homebrew: brew install node.\",\n      \"3. Verificar la instalación con: node -v y npm -v.\",\n      \"4. Opcional: usar nvm (instalado manualmente) para gestionar múltiples versiones de Node.\"\n    ],\n\n    // JAVA WINDOWS\n    \"install_java_on_windows\": [\n      \"1. Download a JDK (for example, Eclipse Temurin) from https://adoptium.net or your preferred vendor.\",\n      \"2. Run the installer and follow the wizard (keep default options unless you need specific changes).\",\n      \"3. If needed, set the JAVA_HOME environment variable pointing to the JDK installation folder.\",\n      \"4. Open Command Prompt or PowerShell and verify the installation with: java -version and javac -version.\"\n    ],\n    \"java_windows\": [\n      \"1. Descargar un JDK (por ejemplo, Eclipse Temurin) desde https://adoptium.net o el proveedor de tu preferencia.\",\n      \"2. Ejecutar el instalador y seguir el asistente (mantener las opciones por defecto salvo que necesites cambios específicos).\",\n      \"3. Si es necesario, configurar la variable de entorno JAVA_HOME apuntando a la carpeta de instalación del JDK.\",\n      \"4. Abrir 'Símbolo del sistema' o PowerShell y verificar la instalación con: java -version y javac -version.\"\n    ],\n\n    // JAVA LINUX\n    \"install_java_on_linux\": [\n      \"1. Open a terminal and update package lists: sudo apt update.\",\n      \"2. Install the JDK (for example, OpenJDK 17): sudo apt install openjdk-17-jdk.\",\n      \"3. Verify the installation with: java -version and javac -version.\",\n      \"4. Optional: configure JAVA_HOME in your profile file (.bashrc, .zshrc, etc.) if required by tools.\"\n    ],\n    \"java_linux\": [\n      \"1. Abrir una terminal y actualizar repositorios: sudo apt update.\",\n      \"2. Instalar el JDK (por ejemplo OpenJDK 17): sudo apt install openjdk-17-jdk.\",\n      \"3. Verificar la instalación con: java -version y javac -version.\",\n      \"4. Opcional: configurar JAVA_HOME en tu archivo de perfil (.bashrc, .zshrc, etc.) para herramientas que lo requieran.\"\n    ],\n\n    // JAVA MACOS\n    \"install_java_on_macos\": [\n      \"1. Install Homebrew if it is not installed.\",\n      \"2. Install OpenJDK 17 with Homebrew: brew install openjdk@17.\",\n      \"3. Add the JDK to PATH and set JAVA_HOME as indicated by brew after the installation.\",\n      \"4. Verify the installation with: java -version and javac -version.\"\n    ],\n    \"java_macos\": [\n      \"1. Instalar Homebrew si no está instalado.\",\n      \"2. Instalar OpenJDK 17 con Homebrew: brew install openjdk@17.\",\n      \"3. Agregar el JDK al PATH y configurar JAVA_HOME según las instrucciones que muestra brew al finalizar la instalación.\",\n      \"4. Verificar la instalación con: java -version y javac -version.\"\n    ],\n\n    // GO WINDOWS\n    \"install_go_on_windows\": [\n      \"1. Download the Go installer for Windows from https://go.dev/dl (current stable version).\",\n      \"2. Run the installer and follow the default steps (it installs in C:\\\\Go by default).\",\n      \"3. Make sure the Go bin directory (e.g. C:\\\\Go\\\\bin) is included in the PATH environment variable.\",\n      \"4. Verify the installation by opening Command Prompt and running: go version.\"\n    ],\n    \"go_windows\": [\n      \"1. Descargar el instalador de Go para Windows desde https://go.dev/dl (versión estable actual).\",\n      \"2. Ejecutar el instalador y seguir los pasos por defecto (instala en C:\\\\Go por defecto).\",\n      \"3. Asegurarse de que la carpeta bin de Go (por ejemplo C:\\\\Go\\\\bin) esté en la variable PATH.\",\n      \"4. Verificar la instalación abriendo 'Símbolo del sistema' y ejecutando: go version.\"\n    ],\n\n    // GO LINUX\n    \"install_go_on_linux\": [\n      \"1. Download the Go .tar.gz file from https://go.dev/dl for your architecture.\",\n      \"2. Open a terminal and navigate to the downloads directory.\",\n      \"3. Extract the archive into /usr/local: sudo tar -C /usr/local -xzf go*.tar.gz.\",\n      \"4. Add /usr/local/go/bin to your PATH in your profile file (for example: export PATH=$PATH:/usr/local/go/bin in ~/.bashrc or ~/.profile).\",\n      \"5. Reload the profile or open a new terminal.\",\n      \"6. Verify the installation with: go version.\"\n    ],\n    \"go_linux\": [\n      \"1. Descargar el archivo .tar.gz de Go desde https://go.dev/dl correspondiente a tu arquitectura.\",\n      \"2. Abrir una terminal y moverte a la carpeta de descargas.\",\n      \"3. Extraer el archivo en /usr/local: sudo tar -C /usr/local -xzf go*.tar.gz.\",\n      \"4. Agregar /usr/local/go/bin al PATH en tu archivo de perfil (por ejemplo, export PATH=$PATH:/usr/local/go/bin en ~/.bashrc o ~/.profile).\",\n      \"5. Recargar el archivo de perfil o abrir una nueva terminal.\",\n      \"6. Verificar la instalación con: go version.\"\n    ],\n\n    // GO MACOS\n    \"install_go_on_macos\": [\n      \"1. Install Homebrew if you don’t have it yet.\",\n      \"2. Install Go using Homebrew: brew install go.\",\n      \"3. Verify the installation with: go version.\",\n      \"4. Optional: configure GOPATH and add $GOPATH/bin to PATH if you will work with many Go binaries.\"\n    ],\n    \"go_macos\": [\n      \"1. Instalar Homebrew si aún no lo tienes.\",\n      \"2. Instalar Go con Homebrew: brew install go.\",\n      \"3. Verificar la instalación con: go version.\",\n      \"4. Opcional: configurar GOPATH y añadir $GOPATH/bin al PATH si vas a trabajar con muchos binarios de Go.\"\n    ],\n\n    // DOTNET WINDOWS\n    \"install_dotnet_on_windows\": [\n      \"1. Download the .NET SDK (not just the runtime) from https://dotnet.microsoft.com.\",\n      \"2. Run the installer and follow the wizard with default options.\",\n      \"3. Open Command Prompt or PowerShell and verify the installation with: dotnet --version.\",\n      \"4. Optional: install .NET extensions for your IDE (Visual Studio, VS Code, Rider, etc.).\"\n    ],\n    \"dotnet_windows\": [\n      \"1. Descargar el .NET SDK (no solo el runtime) desde https://dotnet.microsoft.com.\",\n      \"2. Ejecutar el instalador y seguir el asistente con las opciones por defecto.\",\n      \"3. Abrir 'Símbolo del sistema' o PowerShell y verificar la instalación con: dotnet --version.\",\n      \"4. Opcional: instalar extensiones de .NET para tu IDE (Visual Studio, VS Code, Rider, etc.).\"\n    ],\n\n    // DOTNET LINUX\n    \"install_dotnet_on_linux\": [\n      \"1. Add Microsoft package repositories following the official instructions for your distribution (for example, Ubuntu).\",\n      \"2. Update package lists: sudo apt update.\",\n      \"3. Install the .NET 8.0 SDK (example): sudo apt install dotnet-sdk-8.0.\",\n      \"4. Verify the installation with: dotnet --version.\",\n      \"5. Optional: install the ASP.NET runtime if you are deploying web applications.\"\n    ],\n    \"dotnet_linux\": [\n      \"1. Agregar los repositorios de Microsoft siguiendo las instrucciones oficiales para tu distribución (por ejemplo, Ubuntu).\",\n      \"2. Actualizar repositorios: sudo apt update.\",\n      \"3. Instalar el SDK de .NET 8.0 (ejemplo): sudo apt install dotnet-sdk-8.0.\",\n      \"4. Verificar la instalación con: dotnet --version.\",\n      \"5. Opcional: instalar el runtime ASP.NET si vas a desplegar aplicaciones web.\"\n    ],\n\n    // DOTNET MACOS\n    \"install_dotnet_on_macos\": [\n      \"1. Download the .NET SDK installer for macOS from the official .NET website.\",\n      \"2. Run the installer and complete the wizard.\",\n      \"3. Open the terminal and verify the installation with: dotnet --version.\",\n      \"4. Optional: integrate .NET with IDEs such as Visual Studio for Mac or VS Code using extensions.\"\n    ],\n    \"dotnet_macos\": [\n      \"1. Descargar el instalador del .NET SDK para macOS desde el sitio oficial de .NET.\",\n      \"2. Ejecutar el instalador y completar el asistente.\",\n      \"3. Abrir la terminal y verificar la instalación con: dotnet --version.\",\n      \"4. Opcional: integrar .NET con IDEs como Visual Studio para Mac o VS Code mediante extensiones.\"\n    ]\n  },\n\n  \"comandos_linux\": {\n    \"list_files\": {\n      \"en\": \"Use the command: ls -la (shows files, directories and permissions in detailed format, including hidden ones).\"\n    },\n    \"listar_archivos\": {\n      \"es\": \"Usar el comando: ls -la (muestra archivos, carpetas y permisos en formato detallado, incluyendo los ocultos).\"\n    },\n\n    \"view_processes\": {\n      \"en\": \"Use the command: ps aux (lists all processes with user, CPU, memory and command information).\"\n    },\n    \"ver_procesos\": {\n      \"es\": \"Usar el comando: ps aux (lista todos los procesos con información de usuario, CPU, memoria y comando).\"\n    },\n\n    \"search_process\": {\n      \"en\": \"Use the command: ps aux | grep <name> (filters processes whose command contains the given text).\"\n    },\n    \"buscar_proceso\": {\n      \"es\": \"Usar el comando: ps aux | grep <nombre> (filtra los procesos cuyo comando contenga el texto indicado).\"\n    },\n\n    \"kill_process\": {\n      \"en\": \"Use the command: kill -9 <pid> (sends the SIGKILL signal to the process with that ID).\"\n    },\n    \"matar_proceso\": {\n      \"es\": \"Usar el comando: kill -9 <pid> (envía señal SIGKILL al proceso con ese identificador).\"\n    },\n\n    \"view_ports_usage\": {\n      \"en\": \"Use the command: sudo lsof -i -P -n (lists active network connections and the ports used by each process).\"\n    },\n    \"ver_uso_puertos\": {\n      \"es\": \"Usar el comando: sudo lsof -i -P -n (lista conexiones de red activas y los puertos utilizados por cada proceso).\"\n    },\n\n    \"search_file\": {\n      \"en\": \"Use the command: find / -name <file> (searches for the file by name from the root directory; it may take some time).\"\n    },\n    \"buscar_archivo\": {\n      \"es\": \"Usar el comando: find / -name <archivo> (busca el archivo por nombre desde la raíz, puede tardar).\"\n    },\n\n    \"memory_usage\": {\n      \"en\": \"Use the command: free -h (shows total, used and free memory in a human-readable format).\"\n    },\n    \"memoria\": {\n      \"es\": \"Usar el comando: free -h (muestra memoria total, usada y libre en formato legible).\"\n    },\n\n    \"disk_usage\": {\n      \"en\": \"Use the command: df -h (shows disk usage per filesystem in a human-readable format).\"\n    },\n    \"disco\": {\n      \"es\": \"Usar el comando: df -h (muestra uso de disco por sistema de archivos en formato legible).\"\n    },\n\n    \"network_info\": {\n      \"en\": \"Use the command: ip a (shows network interfaces, IP addresses and their status).\"\n    },\n    \"red\": {\n      \"es\": \"Usar el comando: ip a (muestra interfaces de red, IPs y estado de cada una).\"\n    },\n\n    \"start_service\": {\n      \"en\": \"Use the command: sudo systemctl start <service> (starts a service managed by systemd).\"\n    },\n    \"activar_servicio\": {\n      \"es\": \"Usar el comando: sudo systemctl start <servicio> (inicia un servicio administrado por systemd).\"\n    },\n\n    \"view_logs\": {\n      \"en\": \"Use the command: journalctl -u <service> -f (shows and follows a service’s logs in real time).\"\n    },\n    \"ver_logs\": {\n      \"es\": \"Usar el comando: journalctl -u <servicio> -f (muestra y sigue en tiempo real los logs de un servicio).\"\n    }\n  },\n\n  \"comandos_windows\": {\n    \"ip_basic\": {\n      \"en\": \"Run in CMD or PowerShell: ipconfig (shows basic information about network interfaces).\"\n    },\n    \"ip\": {\n      \"es\": \"Ejecutar en CMD o PowerShell: ipconfig (muestra información básica de las interfaces de red).\"\n    },\n\n    \"ip_detailed\": {\n      \"en\": \"Run: ipconfig /all (shows detailed information: DNS, MAC, DHCP, etc.).\"\n    },\n    \"ip_detallada\": {\n      \"es\": \"Ejecutar: ipconfig /all (muestra información detallada: DNS, MAC, DHCP, etc.).\"\n    },\n\n    \"list_processes\": {\n      \"en\": \"Run: tasklist (lists running processes with PID and memory usage).\"\n    },\n    \"listar_procesos\": {\n      \"es\": \"Ejecutar: tasklist (lista procesos en ejecución con PID y uso de memoria).\"\n    },\n\n    \"kill_process\": {\n      \"en\": \"Run: taskkill /PID <pid> /F (forcibly terminates the process with that PID).\"\n    },\n    \"matar_proceso\": {\n      \"es\": \"Ejecutar: taskkill /PID <pid> /F (finaliza forzadamente el proceso con ese PID).\"\n    },\n\n    \"flush_dns\": {\n      \"en\": \"Run: ipconfig /flushdns (clears the DNS resolver cache).\"\n    },\n    \"limpiar_dns\": {\n      \"es\": \"Ejecutar: ipconfig /flushdns (vacía la caché de resolución DNS del sistema).\"\n    },\n\n    \"ports\": {\n      \"en\": \"Run: netstat -ano (shows network connections and open ports with the associated PID).\"\n    },\n    \"puertos\": {\n      \"es\": \"Ejecutar: netstat -ano (muestra conexiones de red y puertos abiertos con el PID asociado).\"\n    },\n\n    \"search_process\": {\n      \"en\": \"Run: tasklist | findstr <name> (filters processes whose name contains the given text).\"\n    },\n    \"buscar_proceso\": {\n      \"es\": \"Ejecutar: tasklist | findstr <nombre> (filtra los procesos cuyo nombre contenga el texto indicado).\"\n    }\n  },\n\n  \"troubleshooting\": {\n    \"docker_permission_denied\": [\n      \"1. Check that Docker is installed correctly: docker --version.\",\n      \"2. Add your user to the docker group to avoid using sudo: sudo usermod -aG docker $USER.\",\n      \"3. Log out and log back in, or run: newgrp docker to apply the changes.\",\n      \"4. Test again with: docker ps to confirm the permission error is gone.\"\n    ],\n    \"docker_permiso_denegado\": [\n      \"1. Verificar que Docker está instalado correctamente: docker --version.\",\n      \"2. Agregar tu usuario al grupo docker para evitar usar sudo: sudo usermod -aG docker $USER.\",\n      \"3. Cerrar sesión y volver a iniciarla, o ejecutar: newgrp docker para aplicar los cambios.\",\n      \"4. Probar nuevamente el comando: docker ps para confirmar que ya no aparece el error de permisos.\"\n    ],\n\n    \"docker_not_starting\": [\n      \"1. Check the Docker service status: sudo systemctl status docker.\",\n      \"2. If it is inactive or has errors, try restarting it: sudo systemctl restart docker.\",\n      \"3. Review the service logs with: journalctl -u docker --no-pager -n 50 to identify issues.\",\n      \"4. Confirm the daemon is running by executing: docker ps.\"\n    ],\n    \"docker_no_inicia\": [\n      \"1. Revisar el estado del servicio Docker: sudo systemctl status docker.\",\n      \"2. Si aparece inactivo o con errores, intentar reiniciarlo: sudo systemctl restart docker.\",\n      \"3. Revisar los registros del servicio con: journalctl -u docker --no-pager -n 50 para identificar posibles errores.\",\n      \"4. Confirmar que el daemon se está ejecutando probando: docker ps.\"\n    ],\n\n    \"port_in_use\": [\n      \"1. On Linux, identify the process using the port: sudo lsof -i :<port>.\",\n      \"2. On Windows, use: netstat -ano | findstr <port> to see the associated PID.\",\n      \"3. Find the process by PID (tasklist on Windows or ps on Linux) and, if safe, terminate it (kill on Linux or taskkill on Windows).\",\n      \"4. Restart the service or application that needs that port and check that there is no conflict.\"\n    ],\n    \"puerto_ocupado\": [\n      \"1. En Linux, identificar el proceso que usa el puerto: sudo lsof -i :<puerto>.\",\n      \"2. En Windows, usar: netstat -ano | findstr <puerto> para ver el PID asociado.\",\n      \"3. Localizar el proceso por PID (tasklist en Windows o ps en Linux) y, si es seguro, finalizarlo (kill en Linux o taskkill en Windows).\",\n      \"4. Volver a iniciar el servicio o aplicación que necesitaba ese puerto y verificar que ya no haya conflicto.\"\n    ],\n\n    \"git_credentials_issues\": [\n      \"1. Remove stored credentials from the system credential manager (Windows Credential Manager or the corresponding helper on Linux/macOS).\",\n      \"2. If using Git Credential Manager, run: git credential-manager reject https://github.com.\",\n      \"3. Check Git configuration: git config --global credential.helper.\",\n      \"4. Perform an operation that requires authentication (e.g., git fetch or git pull) and provide correct credentials.\",\n      \"5. Optional: configure personal access tokens (PAT) if required by GitHub or another provider.\"\n    ],\n    \"problemas_git_credenciales\": [\n      \"1. Eliminar credenciales guardadas en el administrador de credenciales del sistema (Administrador de credenciales en Windows o helper correspondiente en Linux/macOS).\",\n      \"2. En sistemas con Git Credential Manager, ejecutar: git credential-manager reject https://github.com.\",\n      \"3. Verificar la configuración de Git: git config --global credential.helper.\",\n      \"4. Volver a realizar una operación que requiera autenticación (por ejemplo git fetch o git pull) y proporcionar las credenciales correctas cuando las pida.\",\n      \"5. Opcional: configurar tokens personales de acceso (PAT) si GitHub u otro proveedor lo requiere.\"\n    ],\n\n    \"node_modules_error\": [\n      \"1. Close any Node processes using the project folder (for example, running dev servers).\",\n      \"2. Delete the node_modules folder in your project.\",\n      \"3. Clean the npm cache: npm cache clean --force.\",\n      \"4. Make sure you are using a compatible Node version (nvm ls / nvm use if you use NVM).\",\n      \"5. Reinstall dependencies: npm install or npm ci (if using package-lock.json).\"\n    ],\n    \"error_node_modules\": [\n      \"1. Cerrar cualquier proceso de Node que esté usando la carpeta (por ejemplo servidores en ejecución).\",\n      \"2. Eliminar la carpeta node_modules de tu proyecto.\",\n      \"3. Limpiar la caché de npm: npm cache clean --force.\",\n      \"4. Asegurarte de estar usando una versión compatible de Node (nvm ls / nvm use si usas NVM).\",\n      \"5. Reinstalar dependencias: npm install o npm ci (si se usa package-lock.json).\"\n    ],\n\n    \"python_module_not_found\": [\n      \"1. Confirm the name of the module you are trying to import (case-sensitive).\",\n      \"2. Install the module with pip: pip install <module> or python -m pip install <module>.\",\n      \"3. Make sure you are using the same Python interpreter where you installed the module.\",\n      \"4. If you use a virtual environment, activate it before installing and running your scripts.\"\n    ],\n    \"python_modulo_no_encontrado\": [\n      \"1. Confirmar el nombre del módulo que estás intentando importar (respetando mayúsculas y minúsculas).\",\n      \"2. Instalar el módulo con pip: pip install <modulo> o python -m pip install <modulo>.\",\n      \"3. Verificar que estás usando el mismo intérprete de Python donde instalaste el módulo (especialmente si tienes múltiples versiones).\",\n      \"4. Si usas entorno virtual, asegurarte de activarlo antes de instalar y ejecutar (venv\\\\Scripts\\\\activate en Windows o source venv/bin/activate en Linux/Mac).\"\n    ],\n\n    \"pip_not_working\": [\n      \"1. Try to use pip as a Python module: python -m pip --version.\",\n      \"2. Upgrade pip: python -m pip install --upgrade pip.\",\n      \"3. If pip still does not work, check your PATH and ensure the Python Scripts folder is included.\",\n      \"4. As a last resort, reinstall Python, making sure to select 'Add Python to PATH'.\"\n    ],\n    \"pip_no_funciona\": [\n      \"1. Intentar usar pip como módulo de Python: python -m pip --version.\",\n      \"2. Actualizar pip: python -m pip install --upgrade pip.\",\n      \"3. Si pip sigue sin funcionar, revisar la variable PATH y asegurarte de que la carpeta de Scripts de Python esté incluida.\",\n      \"4. En caso extremo, reinstalar Python asegurándote de marcar la opción 'Add Python to PATH'.\"\n    ]\n  },\n\n  \"bases_de_datos\": {\n    \"install_mysql_on_linux\": [\n      \"1. Update package lists: sudo apt update.\",\n      \"2. Install MySQL server: sudo apt install mysql-server.\",\n      \"3. Run the security script: sudo mysql_secure_installation to set root password and basic options.\",\n      \"4. Check that the service is active: sudo systemctl status mysql.\",\n      \"5. Connect to MySQL console with: sudo mysql -u root -p.\"\n    ],\n    \"instalar_mysql_linux\": [\n      \"1. Actualizar repositorios: sudo apt update.\",\n      \"2. Instalar el servidor MySQL: sudo apt install mysql-server.\",\n      \"3. Ejecutar el asistente de seguridad: sudo mysql_secure_installation para configurar contraseña de root y opciones básicas.\",\n      \"4. Verificar que el servicio esté activo: sudo systemctl status mysql.\",\n      \"5. Conectarse a la consola de MySQL con: sudo mysql -u root -p.\"\n    ],\n\n    \"install_postgres_on_linux\": [\n      \"1. Update package lists: sudo apt update.\",\n      \"2. Install PostgreSQL and additional tools: sudo apt install postgresql postgresql-contrib.\",\n      \"3. Check the service status: sudo systemctl status postgresql.\",\n      \"4. Switch to the postgres user: sudo -i -u postgres and access the console with: psql.\",\n      \"5. Create databases and users as needed.\"\n    ],\n    \"instalar_postgres_linux\": [\n      \"1. Actualizar repositorios: sudo apt update.\",\n      \"2. Instalar PostgreSQL y herramientas adicionales: sudo apt install postgresql postgresql-contrib.\",\n      \"3. Verificar el estado del servicio: sudo systemctl status postgresql.\",\n      \"4. Cambiar al usuario postgres: sudo -i -u postgres y luego acceder a la consola con: psql.\",\n      \"5. Crear bases de datos y usuarios según tus necesidades.\"\n    ],\n\n    \"install_sqlserver_on_linux\": [\n      \"1. Add the Microsoft repository following the official documentation for your distribution (import the GPG key and add the repo file).\",\n      \"2. Update package lists: sudo apt update.\",\n      \"3. Install SQL Server: sudo apt install mssql-server.\",\n      \"4. Run the setup tool: sudo /opt/mssql/bin/mssql-conf setup to configure edition, SA password, etc.\",\n      \"5. Check the service status: systemctl status mssql-server and connect with a client tool (sqlcmd or other).\"\n    ],\n    \"instalar_sqlserver_linux\": [\n      \"1. Agregar el repositorio de Microsoft siguiendo la documentación oficial para tu distribución (por ejemplo, importando la clave GPG y añadiendo el repositorio en /etc/apt/sources.list.d).\",\n      \"2. Actualizar repositorios: sudo apt update.\",\n      \"3. Instalar SQL Server: sudo apt install mssql-server.\",\n      \"4. Ejecutar el asistente de configuración: sudo /opt/mssql/bin/mssql-conf setup para establecer edición, contraseña de SA, etc.\",\n      \"5. Verificar el servicio: systemctl status mssql-server y conectarse con una herramienta cliente (sqlcmd u otro).\"\n    ],\n\n    \"mysql_list_databases_command\": \"In the MySQL console, run: SHOW DATABASES; to list all available databases.\",\n    \"comando_listar_bases_mysql\": \"En la consola de MySQL, ejecutar: SHOW DATABASES; para listar todas las bases de datos disponibles.\",\n\n    \"create_postgres_user\": \"In the psql console (as postgres user), run: CREATE USER name WITH PASSWORD 'password'; and then grant permissions as needed.\",\n    \"crear_usuario_postgres\": \"En la consola psql (como usuario postgres), ejecutar: CREATE USER nombre WITH PASSWORD 'clave'; y luego asignarle permisos o roles según sea necesario.\",\n\n    \"restore_postgres_backup\": \"Use the command: psql -U user -d database -f file.sql (make sure the database exists and the user has restore permissions).\",\n    \"restaurar_backup_postgres\": \"Usar el comando: psql -U usuario -d base -f archivo.sql (asegurarse de que la base exista y que el usuario tenga permisos para restaurar).\"\n  },\n\n  \"editores\": {\n    \"vscode_python_setup\": [\n      \"1. Install the official Python extension in VS Code (ms-python.python).\",\n      \"2. Open the command palette (Ctrl+Shift+P) and run: 'Python: Select Interpreter' to choose the correct interpreter or virtual environment.\",\n      \"3. Configure a virtual environment for the project (python -m venv venv) and activate it before opening VS Code, or configure it from the editor.\",\n      \"4. Optional: enable auto-formatting, linting (pylint, flake8) and debugging from the extension settings.\"\n    ],\n    \"vscode_python\": [\n      \"1. Instalar la extensión oficial de Python en VS Code (ms-python.python).\",\n      \"2. Abrir la paleta de comandos (Ctrl+Shift+P) y ejecutar: 'Python: Select Interpreter' para elegir el intérprete o entorno virtual adecuado.\",\n      \"3. Configurar un entorno virtual para el proyecto (python -m venv venv) y activarlo antes de abrir VS Code, o configurarlo desde el propio editor.\",\n      \"4. Opcional: habilitar el formateo automático, linting (pylint, flake8) y depuración desde la configuración de la extensión.\"\n    ],\n\n    \"vscode_java_setup\": [\n      \"1. Install the 'Extension Pack for Java' in VS Code.\",\n      \"2. Make sure you have a JDK installed and configure the JAVA_HOME environment variable if needed.\",\n      \"3. Restart VS Code so it detects the JDK and build tools.\",\n      \"4. Create or open a Java project (preferably Maven or Gradle) so VS Code recognizes the structure and provides autocomplete and debugging.\"\n    ],\n    \"vscode_java\": [\n      \"1. Instalar el paquete de extensiones 'Extension Pack for Java' en VS Code.\",\n      \"2. Asegurarte de tener un JDK instalado y configurar la variable JAVA_HOME si es necesario.\",\n      \"3. Reiniciar VS Code para que detecte el JDK y las herramientas de compilación.\",\n      \"4. Crear o abrir un proyecto Java (preferiblemente Maven o Gradle) para que VS Code reconozca la estructura y ofrezca funciones de autocompletado y depuración.\"\n    ],\n\n    \"intellij_java_setup\": [\n      \"1. Install an appropriate JDK before creating the project (for example, JDK 17).\",\n      \"2. In IntelliJ IDEA, create a new project selecting the type (Maven, Gradle or simple Java project).\",\n      \"3. Open 'Project Structure' and check that the SDK assigned to the project is the correct JDK.\",\n      \"4. Configure the required dependencies (Maven/Gradle) and then build/run from the IDE.\",\n      \"5. Optional: configure run and debug configurations for your application.\"\n    ],\n    \"intellij_java\": [\n      \"1. Instalar un JDK apropiado antes de crear el proyecto (por ejemplo, JDK 17).\",\n      \"2. En IntelliJ IDEA, crear un nuevo proyecto seleccionando el tipo (Maven, Gradle o proyecto Java simple) según tus necesidades.\",\n      \"3. Abrir 'Project Structure' y verificar que el SDK asignado al proyecto sea el JDK correcto.\",\n      \"4. Configurar las dependencias necesarias (Maven/Gradle) y luego compilar/ejecutar desde el propio IDE.\",\n      \"5. Opcional: configurar perfiles de ejecución y depuración para la aplicación.\"\n    ],\n\n    \"pycharm_virtualenvs\": [\n      \"1. Open settings (File → Settings on Windows/Linux or PyCharm → Preferences on macOS).\",\n      \"2. Go to 'Project: <name>' → 'Python Interpreter'.\",\n      \"3. Create a new virtual environment (venv) or select an existing one for the project.\",\n      \"4. Make sure the selected interpreter is the one where you will install project dependencies.\",\n      \"5. Apply the changes and, if necessary, install required packages from the packages section.\"\n    ],\n    \"pycharm_entornos\": [\n      \"1. Abrir las opciones de configuración (File → Settings en Windows/Linux o PyCharm → Preferences en macOS).\",\n      \"2. Ir a 'Project: <nombre>' → 'Python Interpreter'.\",\n      \"3. Crear un nuevo entorno virtual (venv) o seleccionar uno existente según el proyecto.\",\n      \"4. Asegurarse de que el intérprete seleccionado coincida con el entorno donde se instalarán las dependencias.\",\n      \"5. Aplicar los cambios y, si es necesario, instalar las librerías del proyecto desde la sección de paquetes.\"\n    ]\n  },\n\n  \"preguntas_frecuentes\": {\n    \"how_to_check_port_in_use\": \"On Linux, use: lsof -i :<port> or sudo lsof -i :<port>. On Windows, use: netstat -ano | findstr <port> to see which process is using it.\",\n    \"como_verificar_puerto_ocupado\": \"En Linux, usar: lsof -i :<puerto> o sudo lsof -i :<puerto>. En Windows, usar: netstat -ano | findstr <puerto> para ver qué proceso lo está usando.\",\n\n    \"how_to_init_node_project\": \"In the project folder, run: npm init -y to create a basic package.json file, and then add dependencies as needed (for example, express).\",\n    \"como_iniciar_proyecto_node\": \"En la carpeta del proyecto, ejecutar: npm init -y para crear un archivo package.json básico, y luego añadir las dependencias necesarias (por ejemplo, express).\",\n\n    \"how_to_create_python_venv\": \"Run: python -m venv venv to create a virtual environment named 'venv' in the current directory.\",\n    \"como_crear_entorno_python\": \"Usar el comando: python -m venv venv para crear un entorno virtual llamado 'venv' en el directorio actual.\",\n\n    \"how_to_activate_python_venv\": [\n      \"Windows (CMD/PowerShell): venv\\\\Scripts\\\\activate\",\n      \"Linux/Mac (bash/zsh): source venv/bin/activate\"\n    ],\n    \"como_activar_entorno_python\": [\n      \"Windows (CMD/PowerShell): venv\\\\Scripts\\\\activate\",\n      \"Linux/Mac (bash/zsh): source venv/bin/activate\"\n    ],\n\n    \"how_to_update_git\": \"On Linux, use the package manager (for example: sudo apt install git to update to the repo version). On Windows and macOS, download and install the latest Git from the official site.\",\n    \"como_actualizar_git\": \"En Linux, usar el gestor de paquetes (por ejemplo: sudo apt install git para actualizar a la versión del repositorio). En Windows y macOS, descargar el instalador actualizado desde el sitio oficial de Git e instalarlo sobre la versión existente.\",\n\n    \"how_to_clone_repo\": \"Run: git clone <url> in the folder where you want to download the repository (URL is usually taken from GitHub, GitLab, etc.).\",\n    \"como_clonar_repo\": \"Ejecutar: git clone <url> en la carpeta donde quieras descargar el repositorio (la URL se obtiene normalmente desde GitHub, GitLab o similar).\"\n  },\n\n  \"programacion\": {\n    \"java_null_error\": \"A NullPointerException in Java occurs when you try to access a method or field on a reference that is null. To avoid it, properly initialize objects before using them and perform checks (if (obj != null)) when needed.\",\n    \"error_null_java\": \"Un NullPointerException en Java ocurre cuando intentas acceder a un método o atributo de una referencia que es null. Para evitarlo, inicializa correctamente los objetos antes de usarlos y realiza comprobaciones (if (obj != null)) cuando sea necesario.\",\n\n    \"python_indentation_error\": \"Python requires consistent indentation (usually 4 spaces per level) to define code blocks. Mixing tabs and spaces can cause errors; it is recommended to use spaces only.\",\n    \"python_sin_indentacion\": \"Python requiere una indentación consistente (generalmente 4 espacios por nivel) para definir bloques de código. Mezclar espacios y tabulaciones puede producir errores; se recomienda usar siempre espacios.\",\n\n    \"environment_variables\": [\n      \"Windows: in CMD or PowerShell use: setx VAR value (creates the environment variable for future sessions).\",\n      \"Linux: in the terminal use: export VAR=value (valid for the current session) or add the line to your profile file (~/.bashrc, ~/.zshrc) to make it permanent.\"\n    ],\n    \"variables_ambiente\": [\n      \"Windows: usar en CMD o PowerShell: setx VAR valor (crea la variable de entorno para futuras sesiones).\",\n      \"Linux: usar en la terminal: export VAR=valor (válido para la sesión actual) o añadir la línea al archivo de perfil (~/.bashrc, ~/.zshrc) para que sea permanente.\"\n    ],\n\n    \"how_to_create_node_api\": [\n      \"1. In an empty folder, initialize the project: npm init -y (creates package.json).\",\n      \"2. Install Express: npm install express.\",\n      \"3. Create a server.js file with a basic server, for example:\\n   const express = require('express');\\n   const app = express();\\n   app.get('/', (req, res) => res.send('API running'));\\n   app.listen(3000, () => console.log('Server listening on port 3000'));\",\n      \"4. Run the server with: node server.js.\",\n      \"5. Test the API by going to http://localhost:3000 in a browser or using curl/Postman.\"\n    ],\n    \"como_crear_api_node\": [\n      \"1. En una carpeta vacía, inicializar el proyecto: npm init -y (crea package.json).\",\n      \"2. Instalar Express: npm install express.\",\n      \"3. Crear un archivo server.js con un servidor básico, por ejemplo:\\n   const express = require('express');\\n   const app = express();\\n   app.get('/', (req, res) => res.send('API funcionando'));\\n   app.listen(3000, () => console.log('Servidor escuchando en el puerto 3000'));\",\n      \"4. Ejecutar el servidor con: node server.js.\",\n      \"5. Probar la API accediendo a http://localhost:3000 en el navegador o con herramientas como curl o Postman.\"\n    ],\n\n    \"how_to_compile_java\": \"Use the Java compiler: javac File.java (this generates a .class file with bytecode).\",\n    \"como_compilar_java\": \"Usar el compilador de Java: javac archivo.java (esto genera un archivo .class con el bytecode).\",\n\n    \"how_to_run_java\": \"Run the compiled class with: java ClassName (without the .class extension, and from the correct directory or with CLASSPATH configured).\",\n    \"como_ejecutar_java\": \"Ejecutar la clase compilada con: java NombreClase (sin la extensión .class y asegurándote de estar en el directorio correcto o tener el CLASSPATH configurado).\"\n  }\n};\n\nreturn {\n  json: { kb }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        96,
+        0
+      ],
+      "id": "2d423f18-c63c-48bc-b2ba-2fcaab1104a3",
+      "name": "Base de Conocimiento"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.encontrado }}",
+                    "rightValue": "={{ true }}",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true",
+                      "singleValue": true
+                    },
+                    "id": "96ae9261-394f-467f-97ed-c7f614cf75d4"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "955f07c5-7486-434a-98ac-5cc72d3ef14e",
+                    "leftValue": "={{ $json.encontrado }}",
+                    "rightValue": "{{ false }}",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "false",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        528,
+        0
+      ],
+      "id": "cab731c9-6f99-4545-9d40-0abb8d37c6a3",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. Obtener mensaje y KB\nconst message = $('Webhook').first().json.body.message?.text ? $('Webhook').first().json.body.message.text : $('Webhook').first().json.body.edited_message.text;\n\n//const message = \"Cómo puedo listar archivos por comando en linux?\";\nconst kb = $input.first().json.kb;\n\nlet respuestaFinal = null;\nlet categoriaDetectada = \"General\"; // Categoría por defecto\nconst msg = message.toLowerCase();\n\n// NUEVO: Mapa para traducir tus claves técnicas a las categorías del requisito\nconst mapaCategorias = {\n  \"instalacion_software\": \"Software\",\n  \"editores\": \"Software\",\n  \"bases_de_datos\": \"Bases de Datos\",\n  \"programacion\": \"Desarrollo\",\n  \"comandos_linux\": \"Sistemas Operativos\",\n  \"comandos_windows\": \"Sistemas Operativos\",\n  \"troubleshooting\": \"Soporte Técnico\",\n  \"preguntas_frecuentes\": \"General\"\n  // Si añades hardware en el futuro, agrégalo aquí: \"problemas_hardware\": \"Hardware\"\n};\n\n// 3. Lógica de Búsqueda\nfor (const [grupo, contenido] of Object.entries(kb)) {\n  for (const [clave, valor] of Object.entries(contenido)) {\n    \n    // Dividir clave en palabras (ej. \"python_windows\" -> [\"python\", \"windows\"])\n    const palabrasClave = clave.split('_');\n    const esCoincidencia = palabrasClave.every(palabra => msg.includes(palabra));\n\n    if (esCoincidencia) {\n      // Formatear respuesta\n      if (Array.isArray(valor)) {\n        respuestaFinal = valor.join('\\n'); \n      } else {\n        respuestaFinal = valor;\n      }\n      \n      // NUEVO: Asignar la categoría basada en el grupo donde se encontró\n      // Si el grupo existe en el mapa, usa ese nombre, sino usa el nombre técnico\n      categoriaDetectada = mapaCategorias[grupo] || grupo;\n      \n      break; \n    }\n  }\n  if (respuestaFinal) break; \n}\n\n// 4. Retorno de datos\nif (respuestaFinal) {\n  return {\n    json: {\n      encontrado: true,\n      categoria: categoriaDetectada, // <--- Aquí va el requisito cumplido\n      mensaje: respuestaFinal\n    }\n  };\n} else {\n  // Si no se encuentra en la KB, dejamos que la IA decida (o le ponemos \"Sin clasificar\")\n  return {\n    json: {\n      encontrado: false,\n      categoria: \"Pendiente de clasificación AI\",\n      mensaje: message\n    }\n  };\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        304,
+        0
+      ],
+      "id": "0dcc7f99-9bf0-48fc-90d5-a3d13ceec38d",
+      "name": "Busqueda en base de conocimiento"
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\nconst respuesta = data.mensaje;\nconst encontrado = data.encontrado;\n\nlet mensajeFormateado = \"\";\n\nif (!encontrado) {\n  // Si viene de la IA\n  mensajeFormateado = respuesta;\n} else {\n  // Si viene de la base de conocimiento\n  if (Array.isArray(respuesta)) {\n    if (respuesta.length === 0) {\n      mensajeFormateado = \"No encontré información sobre eso.\";\n    } else if (respuesta.length === 1) {\n      mensajeFormateado = respuesta[0];\n    } else {\n      // Múltiples items con formato\n      mensajeFormateado = \"📋 *Aquí está la información:*\\n\\n\" + \n        respuesta.map((item, i) => `${i + 1}. ${item}`).join(\"\\n\\n\");\n    }\n  } else {\n    mensajeFormateado = respuesta;\n  }\n}\n\nreturn {\n  json: {\n    text: mensajeFormateado,\n    parse_mode: \"Markdown\"\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        752,
+        -128
+      ],
+      "id": "b0a12eba-855a-47e3-902f-4c14d00d4903",
+      "name": "Formateo base de conocimiento"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://models.github.ai/inference/chat/completions",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "{\n  \"Authorization\": \"Bearer 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\",\n  \"Content-Type\": \"application/json\",\n  \"Accept\": \"application/json\"\n}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"openai/gpt-4o-mini\",\n  \"messages\": [\n    { \"role\": \"system\", \"content\": \"Eres un asistente de soporte técnico 24/7, el cual categoriza las preguntas por temáticas.\" },\n    { \"role\": \"user\", \"content\": \"Categoriza según estos temas: [Software, Bases de Datos, Desarrollo, Sistemas Operativos, Soporte Técnico, Redes, Hardware, Ciberseguridad, LLMs, Software Crítico, Hardware Crítico, Sistemas Operativos Crítico, No Encontrado] {{ $json.mensaje }}.\"}\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        752,
+        128
+      ],
+      "id": "01b196a2-2500-4a55-bb61-385982c56053",
+      "name": "Categorizacion con IA",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "VdY5guaw7wDGrODd",
+          "name": "Bearer Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.choices[0].message.content.toLowerCase() }}",
+                    "rightValue": "no encontrado",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "id": "7980bd33-db42-4f0e-b09b-cc06fc20e5ff"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "483b1c28-aa88-42f2-8d40-07fb3d95ddac",
+                    "leftValue": "={{ $json.choices[0].message.content.toLowerCase() }}",
+                    "rightValue": "crítico",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notContains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "1c5f3cee-99e1-4a9d-be63-6e5ea5e1bc86",
+                    "leftValue": "={{ $json.choices[0].message.content.toLowerCase() }}",
+                    "rightValue": "crítico",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        944,
+        128
+      ],
+      "id": "15f0f6ac-badc-470a-ba06-0e91b52fa839",
+      "name": "Encuentra categoria"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Webhook').item.json.body.message?.chat.id ? $('Webhook').item.json.body.message?.chat.id : $('Webhook').item.json.body.edited_message.chat.id }}",
+        "text": "= Lo siento, como asistente técnico especializado no puedo ayudarte con esa pregunta. Si necesitas ayuda en relación a tecnología, estaré encantado de ayudarte.",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1216,
+        112
+      ],
+      "id": "b7662d07-75b9-4938-829f-f0a10581055a",
+      "name": "Mensaje no puedo ayudar",
+      "webhookId": "f9a2786d-f37f-47ea-a8e3-e99a3800bff7",
+      "credentials": {
+        "telegramApi": {
+          "id": "kMiYb5yDu09B4Xxb",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Webhook').item.json.body.message?.chat.id ? $('Webhook').item.json.body.message?.chat.id : $('Webhook').item.json.body.edited_message.chat.id }}",
+        "text": "={{ $('Categorizacion con IA').item.json.choices[0].message.content }}\n\n{{ $json.choices[0].message.content }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1424,
+        288
+      ],
+      "id": "3cc1aa23-e7b6-47f6-88d1-a53922a1e24c",
+      "name": "Mensaje exitoso",
+      "webhookId": "f9a2786d-f37f-47ea-a8e3-e99a3800bff7",
+      "credentials": {
+        "telegramApi": {
+          "id": "kMiYb5yDu09B4Xxb",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Webhook').item.json.body.message?.chat.id ? $('Webhook').item.json.body.message?.chat.id : $('Webhook').item.json.body.edited_message.chat.id }}",
+        "text": "=Categoría: {{ $('Busqueda en base de conocimiento').item.json.categoria }}\n\n{{ $json.text }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        976,
+        -128
+      ],
+      "id": "266af1eb-92b3-46f9-b8dc-ae1c177655d0",
+      "name": "Mensaje base de conocimiento",
+      "webhookId": "f9a2786d-f37f-47ea-a8e3-e99a3800bff7",
+      "credentials": {
+        "telegramApi": {
+          "id": "kMiYb5yDu09B4Xxb",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "85466c7e-894d-440f-a08a-5c7384d64014",
+              "leftValue": "={{ $json.body.message.entities[0].type }}",
+              "rightValue": "bot_command",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "ccbdafc2-b9fc-464a-a781-d7a4352458cb",
+              "leftValue": "={{ $json.body.message.text.toLowerCase() }}",
+              "rightValue": "humano",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -128,
+        -16
+      ],
+      "id": "7fd64fc8-f73a-4682-a72d-4b974f93b6ce",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO soporte_humano ( chat_id)\nVALUES ('{{ $('Webhook').item.json.body.message.chat.id }}')\nON CONFLICT (chat_id) DO NOTHING;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        96,
+        -192
+      ],
+      "id": "f39a747c-54e6-4ee4-9751-cd3b274b0a72",
+      "name": "Guardar Humano Soporte",
+      "credentials": {
+        "postgres": {
+          "id": "MZjrEaED2Jk7MPBt",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT chat_id FROM soporte_humano\nWHERE activo = true\nAND chat_id != '{{ $('Webhook').item.json.body.message.chat.id }}'\nLIMIT 1;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1424,
+        496
+      ],
+      "id": "af3afa0c-18b8-439f-b978-6d7bec568ac4",
+      "name": "Seleccionar Humano Soporte",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "MZjrEaED2Jk7MPBt",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Webhook').item.json.body.message?.chat.id ? $('Webhook').item.json.body.message?.chat.id : $('Webhook').item.json.body.edited_message.chat.id }}",
+        "text": "={{ $('Categorizacion con IA').item.json.choices[0].message.content }}\n\nTu pregunta será escalada con una persona.",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1216,
+        496
+      ],
+      "id": "f4e13052-13ae-4d8b-862f-4a2b7f235530",
+      "name": "Mensaje escalado",
+      "webhookId": "f9a2786d-f37f-47ea-a8e3-e99a3800bff7",
+      "credentials": {
+        "telegramApi": {
+          "id": "kMiYb5yDu09B4Xxb",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendAndWait",
+        "chatId": "={{ $('Seleccionar Humano Soporte').item.json.chat_id }}",
+        "message": "={{ $('Webhook').item.json.body.message?.text ? $('Webhook').item.json.body.message.text : $('Webhook').item.json.body.edited_message.text }}",
+        "responseType": "freeText",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2080,
+        496
+      ],
+      "id": "06bedaf7-d440-409b-b1ce-6ee25ef7b60f",
+      "name": "Mensaje a humano",
+      "webhookId": "3d665303-8002-4760-bcd1-09571ede68b7",
+      "credentials": {
+        "telegramApi": {
+          "id": "kMiYb5yDu09B4Xxb",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Webhook').item.json.body.message?.chat.id ? $('Webhook').item.json.body.message?.chat.id : $('Webhook').item.json.body.edited_message.chat.id }}",
+        "text": "={{ $('Categorizacion con IA').item.json.choices[0].message.content }}\n\n{{ $json.data.text }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2256,
+        496
+      ],
+      "id": "2e70a238-ce23-414b-a1a1-3a803ae0ab1e",
+      "name": "Mensaje respuesta del humano a usuario",
+      "webhookId": "f9a2786d-f37f-47ea-a8e3-e99a3800bff7",
+      "credentials": {
+        "telegramApi": {
+          "id": "kMiYb5yDu09B4Xxb",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE soporte_humano\nSET activo = true\nWHERE chat_id = '{{ $('Seleccionar Humano Soporte').item.json.chat_id }}';",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        2416,
+        496
+      ],
+      "id": "e00cb290-2d8e-411f-92e3-a20852c928e2",
+      "name": "Activar humano disponible",
+      "credentials": {
+        "postgres": {
+          "id": "MZjrEaED2Jk7MPBt",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE soporte_humano\nSET activo = false\nWHERE chat_id = '{{ $json.chat_id }}';",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1904,
+        480
+      ],
+      "id": "7b02b67b-6c5a-417b-b89c-71f60ec431b5",
+      "name": "Desactivar humano disponible",
+      "credentials": {
+        "postgres": {
+          "id": "MZjrEaED2Jk7MPBt",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "42c01e28-27ff-4a3c-a87d-b99967e62a15",
+              "leftValue": "={{ ($json) }}",
+              "rightValue": "undefined",
+              "operator": {
+                "type": "object",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1600,
+        496
+      ],
+      "id": "cc71bd8e-2a49-4f22-b961-7ec8e5ba6bbc",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Webhook').item.json.body.message?.chat.id ? $('Webhook').item.json.body.message?.chat.id : $('Webhook').item.json.body.edited_message.chat.id }}",
+        "text": "=No hay personas disponibles para contestarte en este momento. Intente de nuevo más tarde.",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1904,
+        704
+      ],
+      "id": "9028640b-fe61-4959-96fd-327f34ce0669",
+      "name": "Mensaje respuesta del humano a usuario1",
+      "webhookId": "f9a2786d-f37f-47ea-a8e3-e99a3800bff7",
+      "credentials": {
+        "telegramApi": {
+          "id": "kMiYb5yDu09B4Xxb",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "unworkmanly-murmuringly-cindie.ngrok-free.dev",
+            "content-length": "425",
+            "accept-encoding": "gzip, deflate",
+            "content-type": "application/json",
+            "x-forwarded-for": "91.108.5.15",
+            "x-forwarded-host": "unworkmanly-murmuringly-cindie.ngrok-free.dev",
+            "x-forwarded-proto": "https"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "update_id": 255196479,
+            "edited_message": {
+              "message_id": 165,
+              "from": {
+                "id": 453236347,
+                "is_bot": false,
+                "first_name": "Camacho",
+                "username": "khevo1",
+                "language_code": "es"
+              },
+              "chat": {
+                "id": 453236347,
+                "first_name": "Camacho",
+                "username": "khevo1",
+                "type": "private"
+              },
+              "date": 1763608917,
+              "edit_date": 1763608954,
+              "text": "Tengo un problema de categoría crítica y necesito un humano. Se cayó el servidor de la empresa por las escaleras"
+            }
+          },
+          "webhookUrl": "https://unworkmanly-murmuringly-cindie.ngrok-free.dev/webhook/telegram-bot",
+          "executionMode": "production"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Mensaje exitoso",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Base de Conocimiento": {
+      "main": [
+        [
+          {
+            "node": "Busqueda en base de conocimiento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Formateo base de conocimiento",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Categorizacion con IA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Busqueda en base de conocimiento": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Formateo base de conocimiento": {
+      "main": [
+        [
+          {
+            "node": "Mensaje base de conocimiento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Categorizacion con IA": {
+      "main": [
+        [
+          {
+            "node": "Encuentra categoria",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Encuentra categoria": {
+      "main": [
+        [
+          {
+            "node": "Mensaje no puedo ayudar",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Mensaje escalado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mensaje exitoso": {
+      "main": [
+        []
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Guardar Humano Soporte",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Base de Conocimiento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardar Humano Soporte": {
+      "main": [
+        []
+      ]
+    },
+    "Mensaje escalado": {
+      "main": [
+        [
+          {
+            "node": "Seleccionar Humano Soporte",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Seleccionar Humano Soporte": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mensaje a humano": {
+      "main": [
+        [
+          {
+            "node": "Mensaje respuesta del humano a usuario",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mensaje respuesta del humano a usuario": {
+      "main": [
+        [
+          {
+            "node": "Activar humano disponible",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Desactivar humano disponible": {
+      "main": [
+        [
+          {
+            "node": "Mensaje a humano",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Desactivar humano disponible",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Mensaje respuesta del humano a usuario1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "e061c23f-f570-4a0b-b055-9a159db420dc",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1940edf77589e6c34c118d9f19ee7493dd2712632b5e7f82bdff079ac75171fc"
+  },
+  "id": "6mLDJ5RfQ3o8j0uE",
+  "tags": []
+}

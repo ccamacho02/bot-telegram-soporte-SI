@@ -20,6 +20,8 @@ services:
     image: postgres:15
     container_name: n8n_postgres
     restart: always
+    ports: 
+      - "5433:5432"
     environment:
       POSTGRES_USER: n8nuser
       POSTGRES_PASSWORD: n8npassword
